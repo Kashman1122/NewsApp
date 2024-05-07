@@ -1,0 +1,386 @@
+import NewsItem from "./NewsItem"
+import React, { Component } from 'react'
+import Spinner from './Spinner'
+import PropTypes from 'prop-types'
+import InfiniteScroll from "react-infinite-scroll-component";
+
+export class News extends Component {
+    static defaultProps={
+        country:"in",
+        pageSize:15,
+        category:'general',
+    }
+    static propTypes={
+        country:PropTypes.string,
+        pageSize:PropTypes.number,
+        category:PropTypes.string,
+    } 
+  articles=[
+    {
+        "source": {
+            "id": null,
+            "name": "New York Post"
+        },
+        "author": "Jack Hobbs",
+        "title": "'F–king hammered' Elle King slammed for ruining Dolly Parton's 78th birthday celebration: 'Tragic' - New York Post ",
+        "description": "Her publicist will be working more than 9 to 5 to make up for this mistake.",
+        "url": "https://nypost.com/2024/01/22/entertainment/hammered-elle-king-slammed-for-ruining-dolly-partons-birthday-celebration/",
+        "urlToImage": "https://nypost.com/wp-content/uploads/sites/2/2024/01/elle-king-caused-quite-furor-75303704.jpg?quality=75&strip=all&w=1024",
+        "publishedAt": "2024-01-22T16:09:00Z",
+        "content": "Her publicist will be working more than 9 to 5 to make up for this mistake. \r\nSinger Elle King found herself in some hot water for slurring her words during a performance to celebrate Dolly Parton’s … [+3717 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "The Athletic"
+        },
+        "author": "The Athletic Staff",
+        "title": "Chiefs move on to sixth straight AFC title game after beating Bills in another playoff classic - The Athletic",
+        "description": "The Chiefs will travel to Baltimore to face the Ravens in the AFC Championship next Sunday at M&T Stadium.",
+        "url": "https://theathletic.com/5214472/2024/01/21/chiefs-bills-afc-divisional-result/",
+        "urlToImage": "https://cdn.theathletic.com/app/uploads/2024/01/21214809/GettyImages-1951261687-scaled.jpg",
+        "publishedAt": "2024-01-22T16:06:59Z",
+        "content": "By Larry Holder, Nate Taylor and Joe Buscaglia\r\nThe Kansas City Chiefs and Buffalo Bills added another playoff classic to their rivalry Sunday. But again, the Chiefs came out on top with a 27-24 win … [+5678 chars]"
+    },
+    {
+        "source": {
+            "id": "cnn",
+            "name": "CNN"
+        },
+        "author": "Jacqueline Howard",
+        "title": "New blood test that screens for Alzheimer’s may be a step closer to reality, study suggests - CNN",
+        "description": "Testing a person’s blood for a type of protein called phosphorylated tau, or p-tau, could be used to screen for Alzheimer’s disease with “high accuracy,” even before symptoms begin to show, a new study suggests.",
+        "url": "https://www.cnn.com/2024/01/22/health/alzheimers-blood-test-screening-study/index.html",
+        "urlToImage": "https://media.cnn.com/api/v1/images/stellar/prod/230314154343-alzheimer-senior-hands-stock.jpg?c=16x9&q=w_800,c_fill",
+        "publishedAt": "2024-01-22T16:00:00Z",
+        "content": "Testing a persons blood for a type of protein called phosphorylated tau, or p-tau, could be used to screen for Alzheimers disease with high accuracy, even before symptoms begin to show, a new study s… [+9766 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "CBS Sports"
+        },
+        "author": "",
+        "title": "2024 NFL playoffs: Early odds for AFC, NFC title games as Ravens favored over Patrick Mahomes-led Chiefs - CBS Sports",
+        "description": "Here's a look at the lines for the AFC and NFC championship games",
+        "url": "https://www.cbssports.com/nfl/news/2024-nfl-playoffs-early-odds-for-afc-nfc-title-games-as-ravens-favored-over-patrick-mahomes-led-chiefs/",
+        "urlToImage": "https://sportshub.cbsistatic.com/i/r/2024/01/20/912fc411-bc01-4f1b-869a-1c3d2d4bee30/thumbnail/1200x675/228cf245f22f2394734cc4403ef8a2b0/lamar-g.jpg",
+        "publishedAt": "2024-01-22T15:49:00Z",
+        "content": "And then there were four. The NFL playoffs have whittled down to the final four after a wild divisional round, and now we have Championship Sunday to look forward to which features a handful of the l… [+3180 chars]"
+    },
+    {
+        "source": {
+            "id": "the-washington-post",
+            "name": "The Washington Post"
+        },
+        "author": "Kate Brady",
+        "title": "Over 1 million Germans demonstrate against AfD across country - The Washington Post",
+        "description": "After months of surging popularity of the AfD, a report disclosing that the party discussed expelling foreigners appears to have served as a wake-up call for many Germans.",
+        "url": "https://www.washingtonpost.com/world/2024/01/22/germany-rally-afd-berlin/",
+        "urlToImage": "https://www.washingtonpost.com/wp-apps/imrs.php?src=https://d1i4t8bqe7zgj6.cloudfront.net/01-22-2024/t_4f8d2c6a8be34ce3a45d16767c5ec4f1_name_EAE4JLWDNGI7A5G5GN7MK2F2GY.jpg&w=1440",
+        "publishedAt": "2024-01-22T15:47:00Z",
+        "content": "Comment on this story\r\nComment\r\nAdd to your saved stories\r\nSave\r\nBERLIN Demonstrations against the far-right Alternative for Germany (AfD) party swept across the country this weekend, strengthening c… [+7219 chars]"
+    },
+     
+    {
+        "source": {
+            "id": "the-hill",
+            "name": "The Hill"
+        },
+        "author": "Zach Schonfeld",
+        "title": "E. Jean Carroll trial paused over Trump lawyer’s COVID exposure - The Hill",
+        "description": "NEW YORK — E. Jean Carroll’s defamation trial against former President Trump was postponed Monday after a juror and one of Trump’s lawyers reported feeling ill. U.S. District Judge Lewis Kaplan, who oversees the trial, announced in the courtroom he would post…",
+        "url": "https://thehill.com/regulation/court-battles/4421484-e-jean-carroll-trial-trump-lawyers-covid/",
+        "urlToImage": "https://thehill.com/wp-content/uploads/sites/2/2024/01/trumpdonald_012224_ap.jpg?w=1280",
+        "publishedAt": "2024-01-22T15:23:00Z",
+        "content": "NEW YORK E. Jean Carroll’s defamation trial against former President Trump was postponed Monday after a juror and one of Trump’s lawyers reported feeling ill.\r\nU.S. District Judge Lewis Kaplan, who o… [+1786 chars]"
+    },
+    
+    {
+        "source": {
+            "id": null,
+            "name": "Yahoo Entertainment"
+        },
+        "author": "Donal Griffin and David Voreacos",
+        "title": "SEC Probes B. Riley Deals With Client Tied to Failed Fund - Yahoo Finance",
+        "description": "(Bloomberg) -- US authorities are investigating B. Riley Financial Inc.’s deals with a key client who was linked to a securities fraud, and the use of his...",
+        "url": "https://finance.yahoo.com/news/sec-probes-b-riley-deals-012241260.html",
+        "urlToImage": "https://s.yimg.com/ny/api/res/1.2/3elja5JlnsUfopkHyFJo9w--/YXBwaWQ9aGlnaGxhbmRlcjt3PTEyMDA7aD04MDA-/https://media.zenfs.com/en/bloomberg_markets_842/1de5d7027c831e0e8083bbc3989bad0e",
+        "publishedAt": "2024-01-22T15:05:37Z",
+        "content": "(Bloomberg) -- US authorities are investigating B. Riley Financial Inc.s deals with a key client who was linked to a securities fraud, and the use of his assets to help the investment bank obtain a l… [+7112 chars]"
+    },
+    {
+        "source": {
+            "id": "associated-press",
+            "name": "Associated Press"
+        },
+        "author": null,
+        "title": "Election 2024: DeSantis drops ahead of New Hampshire primary, live updates - The Associated Press",
+        "description": "The race for the Republican and Democratic presidential nominations is converging in <a href=\"https://apnews.com/article/new-hampshire-primary-what-to-expect-f767927784a82d54328de4d212eb15cc\" data-cms-id=\"e6973051-f0fa-3774-89cc-3a327d07e151\" data-cms-href=\"h…",
+        "url": "https://apnews.com/live/ new-hampshire-primary-results-updates",
+        "urlToImage": "https://dims.apnews.com/dims4/default/92c3381/2147483647/strip/true/crop/4411x2481+0+230/resize/1440x810!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2Faf%2Fe3%2F958ec30bd3c1eba70892bdc65a9f%2Ffb2478fdc13e4a35950284b10ff59c6d",
+        "publishedAt": "2024-01-22T15:00:00Z",
+        "content": "FRANKLIN, N.H. _ Haley supporters booed and yelled, Noooo! when she said the media elite and political establishment have been pressuring her to drop out.\r\nAmerica does not do coronations, she said a… [+651 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "MarketWatch"
+        },
+        "author": "Joseph Adinolfi",
+        "title": "The gulf between winners and losers could mean problems for the S&P 500 - MarketWatch",
+        "description": "One widely followed technical strategist has highlighted several reasons why investors should be anxious about a looming pullback following Friday's record...",
+        "url": "https://www.marketwatch.com/story/widening-gulf-between-markets-winners-and-losers-could-create-problems-for-s-p-500-as-it-marches-toward-5-000-analyst-warns-9a4630bd",
+        "urlToImage": "https://images.mktw.net/im-615981/social",
+        "publishedAt": "2024-01-22T14:52:00Z",
+        "content": "That the S&amp;P 500 managed to log its first record close in more than two years late last week should be boosting investors confidence. However, one widely followed technical strategist has highlig… [+3034 chars]"
+    },
+    {
+        "source": {
+            "id": "ars-technica",
+            "name": "Ars Technica"
+        },
+        "author": "Eric Berger",
+        "title": "NASA loses, and then recovers, contact with its historic Mars helicopter - Ars Technica",
+        "description": "Ingenuity has been flying above Mars, off and on, for nearly three years.",
+        "url": "https://arstechnica.com/space/2024/01/nasa-loses-and-then-recovers-contact-with-its-historic-mars-helicopter/",
+        "urlToImage": "https://cdn.arstechnica.net/wp-content/uploads/2022/05/FSHZlQxVsAA1X_t-760x380.jpg",
+        "publishedAt": "2024-01-22T14:34:47Z",
+        "content": "Enlarge/ NASA's Mars Ingenuity helicopter has been flying across the red planet for nearly three years.\r\n49\r\nThe US space agency prompted widespread dismay in the spaceflight community on Friday even… [+2802 chars]"
+    },
+    {
+        "source": {
+            "id": "abc-news",
+            "name": "ABC News"
+        },
+        "author": "MICHELLE CHAPMAN AP business writer",
+        "title": "Macy's rejects $5.8B takeover bid from Arkhouse Management, Brigade Capital Management - ABC News",
+        "description": "Macy’s is rejecting a $5.8 billion takeover offer from investment firms Arkhouse Management and Brigade Capital Management, saying they didn’t provide a viable financing plan",
+        "url": "https://abcnews.go.com/Business/wireStory/macys-rejects-58b-takeover-bid-arkhouse-management-brigade-106562212",
+        "urlToImage": "https://i.abcnewsfe.com/a/f9350ef4-292b-45b0-bf37-db62597a4dcc/wirestory_c9167d79c3fe39a192a0ac4c80341408_16x9.jpg?w=1600",
+        "publishedAt": "2024-01-22T14:15:00Z",
+        "content": "Macy's is rejecting a $5.8 billion takeover offer from investment firms Arkhouse Management and Brigade Capital Management, saying they didn't provide a viable financing plan.\r\nArkhouse and Brigade o… [+3498 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Nintendo Life"
+        },
+        "author": "Ollie Reynolds",
+        "title": "Ace Attorney Fans Rejoice, The Franchise Is Not Stopping Anytime Soon - Nintendo Life",
+        "description": "No objections here",
+        "url": "https://www.nintendolife.com/news/2024/01/ace-attorney-fans-rejoice-the-franchise-is-not-stopping-anytime-soon",
+        "urlToImage": "https://images.nintendolife.com/4f6bb7af310c4/1280x720.jpg",
+        "publishedAt": "2024-01-22T14:00:00Z",
+        "content": "Image: Capcom\r\nThe Switch has seen a bevy of Ace Attorney games over the past several years, and that's not stopping anytime soon, as Apollo Justice: Ace Attorney Trilogy will be launching this week … [+1239 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "NDTV News"
+        },
+        "author": null,
+        "title": "Man, 22, Gets Double Lung Transplant After Years Of Heavy Vaping: \"Had 1% Chance Of Survival\" - NDTV",
+        "description": "Mr Allard will never be able to smoke or drink again. He will also need another transplant later.",
+        "url": "https://www.ndtv.com/world-news/man-22-gets-double-lung-transplant-after-years-of-heavy-vaping-had-1-chance-of-survival-4911414",
+        "urlToImage": "https://c.ndtvimg.com/2024-01/40n6aqeo_vaping_625x300_22_January_24.jpeg?ver-20240117.06",
+        "publishedAt": "2024-01-22T13:24:41Z",
+        "content": "The 22-year-old received a double lung transplant on January 1.\r\nA 22-year-old man in the United States underwent a double lung transplant after he had only \"one per cent chance of survival\" followin… [+1767 chars]"
+    },
+    {
+        "source": {
+            "id": "entertainment-weekly",
+            "name": "Entertainment Weekly"
+        },
+        "author": "https://www.facebook.com/entertainmentweekly",
+        "title": "How to watch the 2024 Oscar nominations - Entertainment Weekly News",
+        "description": "Find out everything you need to know about the nominations for the 96th annual Academy Awards, including how to watch as the nominees for each category are announced live.",
+        "url": "https://ew.com/how-to-watch-2024-oscar-nominations-livestream-8536115",
+        "urlToImage": "https://ew.com/thmb/msk-mWWZrHgdnKMogTuCm8Diuko=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/oscars-011824-cc1006ea7e66431bbf643a15f01dd555.jpg",
+        "publishedAt": "2024-01-22T13:00:43Z",
+        "content": "Who will win big at the 2024 Oscars? After months of campaigning and debating, awards watchers are about to have the biggest piece of that puzzle when the Oscar nominations are finally announced on T… [+1754 chars]"
+    },
+    {
+        "source": {
+            "id": "associated-press",
+            "name": "Associated Press"
+        },
+        "author": "LORNE COOK",
+        "title": "EU pushes for Palestinian statehood, rejecting Israeli leader's insistence it's off the table - The Associated Press",
+        "description": "European Union foreign ministers are saying they think the creation of a Palestinian state is the only credible way to achieve peace in the Middle East. As they met in Brussels on Monday, the ministers expressed concern that Israeli Prime Minister Benjamin Ne…",
+        "url": "https://apnews.com/article/israel-palestinians-gaza-eu-europe-statehood-ee6db2a05e31038278ab5d702aaca8b9",
+        "urlToImage": "https://dims.apnews.com/dims4/default/5a840c7/2147483647/strip/true/crop/6233x3506+0+324/resize/1440x810!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F43%2F9f%2F4875379396700cf3f4306c0e28b5%2F6af94dd6c315490eac5970ee5aa13d8a",
+        "publishedAt": "2024-01-22T12:55:00Z",
+        "content": "BRUSSELS (AP) European Union foreign ministers argued Monday that the creation of a Palestinian state is the only credible way to achieve peace in the Middle East, and they expressed concern about Is… [+4032 chars]"
+    },
+    {
+        "source": {
+            "id": "fox-news",
+            "name": "Fox News"
+        },
+        "author": "Ryan Gaydos",
+        "title": "Brittany Mahomes squeezes Taylor Swift after Travis Kelce's pivotal 3rd quarter TD - Fox News",
+        "description": "Brittany Mahomes and Taylor Swift were celebrating in the suite at Highmark Stadium as they watched the Kansas City Chiefs take the lead in the second half.",
+        "url": "https://www.foxnews.com/sports/brittany-mahomes-squeezes-taylor-swift-travis-kelces-pivotal-3rd-quarter-td",
+        "urlToImage": "https://static.foxnews.com/foxnews.com/content/uploads/2024/01/Brittany-Mahomes8.jpg",
+        "publishedAt": "2024-01-22T12:54:00Z",
+        "content": "Join Fox News for access to this content\r\nPlus get unlimited access to thousands of articles, videos and more with your free account!\r\nPlease enter a valid email address.\r\nBy entering your email, you… [+2361 chars]"
+    },
+    {
+        "source": {
+            "id": "fox-news",
+            "name": "Fox News"
+        },
+        "author": "Danielle Wallace",
+        "title": "Biden campaign attack ad blames Trump for Dobbs abortion decision - Fox News",
+        "description": "President Biden and Vice President Kamala Harris bring abortion issue to center focus on 51st anniversary of Roe v Wade with a new ad against former President Trump.",
+        "url": "https://www.foxnews.com/politics/biden-campaign-attack-ad-blames-trump-dobbs-abortion-decision",
+        "urlToImage": "https://static.foxnews.com/foxnews.com/content/uploads/2024/01/trump-biden-side-by-side-recent.jpg",
+        "publishedAt": "2024-01-22T12:39:00Z",
+        "content": "President Bidens presidential campaign released a new attack ad on Sunday attempting to blame former President Donald Trump for the overturning of Roe v. Wade, as the Biden-Harris ticket seeks to mak… [+4532 chars]"
+    },
+]
+capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+  constructor(props)//the way to use constructor why we use constructor here because constructor inside class h jb jb  class run hogi tb tb ye chlega jiski wjh se me article ko uodate kr pauga
+  {
+     
+    super(props);
+     
+    console.log("hello i am contructor from news compoment")
+    this.state={//inhi me changes lauga oor content ko display krauga 
+      articles:this.articles,//isse kya hoga article ka content articles me jata rhega
+      loading:false,//aapne aap false rhegi8
+       
+      page:1,
+      totalResult:0,
+      item:0
+    }
+    document.title=`${this.capitalizeFirstLetter(this.props.category)}-MyPersonalNews-App`
+  }
+   
+  async componentDidMount() 
+  {
+    const url=`https://newsapi.org/v2/top-headlines?country=in&apiKey=90cd92924a4447ba804299ae03066321&category=${this.props.category}&page=${this.state.page}&pageSize=${this.props.pageSize}`;
+    this.props.setProgress(0)
+    this.setState({loading:true});
+    this.props.setProgress(30)
+        let data=await fetch(url);//yaha se url fetch ho jayega
+        let parseData=await data.json();
+        this.props.setProgress(70)
+        console.log(parseData);
+    this.setState({
+        articles:parseData.articles,//yaha api se fetch ho k articles me artiles aare h
+        totalResult:parseData.totalResult,
+        loading:false,
+    })
+    this.props.setProgress(100)
+  }
+
+//   async Update()
+//   {
+//     let url=`https://newsapi.org/v2/top-headlines?country=in&apiKey=90cd92924a4447ba804299ae03066321&category=${this.props.category}&page=${this.state.page}&pageSize=${this.props.pageSize}`;
+//     this.setState({loading:true});let data=await fetch(url);//yaha se url fetch ho jayega
+    
+//     let parseData=await data.json();
+     
+//     console.log(parseData);
+// this.setState({
+//     page:this.state.page-1,//is wjh se value page me store ho jaygei so that ki hm aage kelie use kr ske
+//     articles:parseData.articles,//yaha api se fetch ho k articles me artiles aare h
+//     loading:false,
+// })  
+//   }
+  handlePrev =async()=>{
+    let url=`https://newsapi.org/v2/top-headlines?country=in&apiKey=90cd92924a4447ba804299ae03066321&category=${this.props.category}&page=${this.state.page-1}&pageSize=${this.props.pageSize}`;
+        this.setState({loading:true});let data=await fetch(url);//yaha se url fetch ho jayega
+        
+        let parseData=await data.json();
+         
+        console.log(parseData);
+    this.setState({
+        page:this.state.page-1,//is wjh se value page me store ho jaygei so that ki hm aage kelie use kr ske
+        articles:parseData.articles,//yaha api se fetch ho k articles me artiles aare h
+        loading:false,
+         
+    })
+
+    // this.setState({page:this.state.page-1})
+    // this.Update()
+  }
+
+
+  handleNext= async()=>{
+    if(this.state.page + 1>Math.ceil(this.state.totalResults/15))
+    {
+        
+    }
+    else{
+    let url=`https://newsapi.org/v2/top-headlines?country=in&apiKey=90cd92924a4447ba804299ae03066321&category=${this.props.category}&page=${this.state.page+1}&pageSize=${this.props.pageSize}`;
+          this.setState({loading:true});let data=await fetch(url);//yaha se url fetch ho jayega
+      
+        let parseData=await data.json();
+         
+       
+        this.setState({
+        page:this.state.page+1,
+        articles:parseData.articles,//yaha api se fetch ho k articles me artiles aare h
+        loading:false
+    })}
+    // this.setState({page:this.state.page+1})
+    // this.Update()
+  }
+   
+
+  fetchMoreData = async () => {
+    this.setState({
+      page: this.state.page + 1,
+    });
+  
+    const url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=90cd92924a4447ba804299ae03066321&category=${this.props.category}&page=${this.state.page}&pageSize=${this.props.pageSize}`;
+    this.setState({ loading: true });
+    let data = await fetch(url);
+    let parseData = await data.json();
+    console.log(parseData);
+    this.setState({
+      articles: this.state.articles.concat(parseData.articles),
+      totalResult:parseData.totalResults,  // Corrected property name
+      loading: false,
+    });
+  };
+  
+
+  render() {
+    return (//agr koi cheej null hoti h toh uski hum slicing nhi kr skte
+    <div className="container md-3" style={{ marginTop: "30px" }}>{/* for making space in y-axis, i.e., taking margin from above y-axis */}
+        <h2 className="text-center" style={{marginTop:"90px"}}>Top HeadLines on {this.capitalizeFirstLetter(this.props.category)}</h2><div className="row">
+        <InfiniteScroll
+          dataLength={this.state.articles.length}
+          next={this.fetchMoreData}
+          hasMore={this.state.articles.length!==this.state.totalResult}
+          loader={this.state.loading ? <Spinner /> : null}
+        >
+        <div className="container">
+        <div className="row">
+            {/* {this.state.loading && <Spinner/>} agr loading true hai to spinner chle wrna nhi */}
+        {this.state.articles.map((element)=>{ //yaha element object bna diya 
+            return  <div className="col-md-4 my-3"> 
+                <NewsItem title={element.title?element.title.slice(0,45):""} description={element.description?element.description.slice(0,88):""} imageUrl={element.urlToImage} newsUrl={element.url} author={element.author} date={element.publishedAt} source={element.source.name}/>{/*element.url ne fetch kiye vo gya newUrl variable me */}{/*Is line se NewsItem me props jare h jo ki me vha driect curly braces ke thourgh access krra hu*/}
+            </div> 
+        })}{/*isse sare fetch ho jayege*/}
+        </div>
+        </div>
+        </InfiniteScroll>
+        </div>
+        <div className="d-flex justify-content-between">
+         
+        {/* <button type="button" className="btn btn-primary" disabled={this.state.page<=1} onClick={this.handlePrev} >prev</button> {/*this.state.__ aaisa krne se me sare articles ki properties kop use kr skta hu =*/}
+        {/* <button type="button" className="btn btn-primary" disabled={this.state.page + 1==15} onClick={this.handleNext}>Next</button> */}  
+         </div>
+    </div>
+    )
+  }
+}
+
+export default News
